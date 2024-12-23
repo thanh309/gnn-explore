@@ -2,18 +2,19 @@ import torch
 import torch.nn.functional as F
 
 import torch_geometric.transforms as T
-from model import GCN
+from model import GCN, GraphSAGE, GAT, GIN
 
 from ogb.nodeproppred import PygNodePropPredDataset, Evaluator
 
 
 MODELS = ['gcn', 'graphsage', 'gat', 'gin']
-model_name = 'gcn'
+model_name = 'gin'
 LOG_STEP = 10
 HIDDEN_DIM = 128
 NUM_LAYERS = 3
-DROPOUT = 0.5
+DROPOUT = 0.1
 NUM_EPOCHS = 500
+LR = 0.005
 
 
 def get_model(model_name, in_channels, hidden_channels, out_channels, num_layers, dropout) -> torch.nn.Module:
@@ -21,6 +22,30 @@ def get_model(model_name, in_channels, hidden_channels, out_channels, num_layers
 
     if model_name == 'gcn':
         return GCN(
+            in_channels=in_channels,
+            hidden_channels=hidden_channels,
+            num_layers=num_layers,
+            out_channels=out_channels,
+            dropout=dropout
+        )
+    if model_name == 'graphsage':
+        return GraphSAGE(
+            in_channels=in_channels,
+            hidden_channels=hidden_channels,
+            num_layers=num_layers,
+            out_channels=out_channels,
+            dropout=dropout
+        )
+    if model_name == 'gat':
+        return GAT(
+            in_channels=in_channels,
+            hidden_channels=hidden_channels,
+            num_layers=num_layers,
+            out_channels=out_channels,
+            dropout=dropout
+        )
+    if model_name == 'gin':
+        return GIN(
             in_channels=in_channels,
             hidden_channels=hidden_channels,
             num_layers=num_layers,
@@ -86,7 +111,7 @@ def main():
         NUM_LAYERS,
         DROPOUT
     ).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 
     for epoch in range(1, 1 + NUM_EPOCHS):
         loss = train(model, data, train_idx, optimizer)
