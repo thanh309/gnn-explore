@@ -5,11 +5,12 @@ import torch_geometric.transforms as T
 from model import GCN, GraphSAGE, GAT, GIN
 
 from ogb.nodeproppred import PygNodePropPredDataset, Evaluator
+import wandb
 
 
 MODELS = ['gcn', 'graphsage', 'gat', 'gin']
 model_name = 'gin'
-LOG_STEP = 10
+LOG_STEP = 1
 HIDDEN_DIM = 256
 NUM_LAYERS = 3
 DROPOUT = 0.25
@@ -113,6 +114,22 @@ def main():
     ).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 
+
+    PROJECT = 'GNN-Explore'
+    RESUME = 'allow'
+    wandb.init(
+        project=PROJECT,
+        resume=RESUME,
+        name=f'{model_name}_{HIDDEN_DIM}_{DROPOUT}_{LR}',
+        config={
+            'hidden_dim': HIDDEN_DIM,
+            'dropout': DROPOUT,
+            'num_epochs': NUM_EPOCHS,
+            'lr': LR
+        }
+    )
+    wandb.watch(model)
+
     for epoch in range(1, 1 + NUM_EPOCHS):
         loss = train(model, data, train_idx, optimizer)
         result = test(model, data, split_idx, evaluator)
@@ -126,7 +143,16 @@ def main():
                 f'Valid: {100 * valid_acc:.2f}% '
                 f'Test: {100 * test_acc:.2f}%'
             )
+            wandb.log({
+                'epoch': epoch,
+                'loss': loss,
+                'train_acc': train_acc,
+                'val_acc': valid_acc,
+                'test_acc': test_acc
+            })
 
+    wandb.finish()
 
 if __name__ == '__main__':
-    main()
+    for _ in range(4):
+        main()
