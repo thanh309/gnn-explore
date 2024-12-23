@@ -105,8 +105,8 @@ class GIN(torch.nn.Module):
         self.gins.append(GINConv(
             torch.nn.Sequential(
                 torch.nn.Linear(in_channels, hidden_channels),
-                torch.nn.BatchNorm1d(hidden_channels),
                 torch.nn.ReLU(),
+                torch.nn.BatchNorm1d(hidden_channels),
                 torch.nn.Dropout(p=dropout),
                 torch.nn.Linear(hidden_channels, hidden_channels),
                 torch.nn.ReLU(),
@@ -118,8 +118,8 @@ class GIN(torch.nn.Module):
             self.gins.append(GINConv(
                 torch.nn.Sequential(
                     torch.nn.Linear(hidden_channels, hidden_channels),
-                    torch.nn.BatchNorm1d(hidden_channels),
                     torch.nn.ReLU(),
+                    torch.nn.BatchNorm1d(hidden_channels),
                     torch.nn.Dropout(p=dropout),
                     torch.nn.Linear(hidden_channels, hidden_channels),
                     torch.nn.ReLU(),
@@ -131,8 +131,8 @@ class GIN(torch.nn.Module):
         self.gins.append(GINConv(
             torch.nn.Sequential(
                 torch.nn.Linear(hidden_channels, hidden_channels),
-                torch.nn.BatchNorm1d(hidden_channels),
                 torch.nn.ReLU(),
+                torch.nn.BatchNorm1d(hidden_channels),
                 torch.nn.Dropout(p=dropout),
                 torch.nn.Linear(hidden_channels, out_channels)
             )

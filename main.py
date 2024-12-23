@@ -10,11 +10,11 @@ from ogb.nodeproppred import PygNodePropPredDataset, Evaluator
 MODELS = ['gcn', 'graphsage', 'gat', 'gin']
 model_name = 'gin'
 LOG_STEP = 10
-HIDDEN_DIM = 128
+HIDDEN_DIM = 256
 NUM_LAYERS = 3
-DROPOUT = 0.1
+DROPOUT = 0.25
 NUM_EPOCHS = 500
-LR = 0.005
+LR = 0.001
 
 
 def get_model(model_name, in_channels, hidden_channels, out_channels, num_layers, dropout) -> torch.nn.Module:
