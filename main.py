@@ -15,7 +15,7 @@ HIDDEN_DIM = 256
 NUM_LAYERS = 3
 DROPOUT = 0.25
 NUM_EPOCHS = 500
-LR = 0.001
+LR = 0.01
 
 
 def get_model(model_name, in_channels, hidden_channels, out_channels, num_layers, dropout) -> torch.nn.Module:
@@ -154,5 +154,5 @@ def main():
     wandb.finish()
 
 if __name__ == '__main__':
-    for _ in range(4):
+    for _ in range(5):
         main()
